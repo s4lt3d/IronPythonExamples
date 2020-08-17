@@ -1,11 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.AccessControl;
-using System.Text;
-using System.Threading.Tasks;
 using IronPython.Hosting;
-
 
 public class Program
 {
@@ -16,20 +10,19 @@ x = 5
 y = 8
 print(x + y)
 z = app.custom_add(16, 19)
-print(z)
+app.log('hello')
+
         ";
 
         var engine = Python.CreateEngine();
         var scope = engine.CreateScope();
         scope.SetVariable("app", new Program());
-        //var source = engine.CreateScriptSourceFromString("custom_add()", Microsoft.Scripting.SourceCodeKind.Statements);
-        //source.Execute(scope);
         var ops = engine.Operations;
-            
 
         engine.Execute(python_script, scope);
         var python_x = scope.GetVariable("x");
 
+        Console.ReadKey();
     }
 
     static public object custom_add(params object[] objects) {
@@ -44,5 +37,11 @@ print(z)
             return (float)objects[0] + (float)objects[1];
 
         }
+    }
+
+    static public void log(params object[] objects)
+    {
+        foreach(object obj in objects)
+            Console.WriteLine((string)obj);
     }
 }
